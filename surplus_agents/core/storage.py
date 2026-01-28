@@ -1,7 +1,7 @@
 import json
 import hashlib
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 
 class StorageManager:
@@ -94,7 +94,7 @@ class StorageManager:
         """Check if a file exists."""
         return path.exists() and path.is_file()
     
-    def list_artifacts(self, agent_name: str, run_id: str) -> list[Path]:
+    def list_artifacts(self, agent_name: str, run_id: str) -> List[Path]:
         """List all artifacts for a specific agent run."""
         agent_dir = self.base_dir / agent_name / run_id
         if not agent_dir.exists():

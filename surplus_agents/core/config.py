@@ -1,8 +1,6 @@
-from typing import Dict, Any, Literal
+from typing import Dict, Any
 from dataclasses import dataclass, field
-
-Mode = Literal["TEST", "DRY_RUN", "LIVE"]
-Network = Literal["OFF", "ON"]
+from .models import Mode, Network
 
 
 @dataclass

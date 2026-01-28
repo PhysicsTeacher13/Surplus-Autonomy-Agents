@@ -1,6 +1,5 @@
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Literal
-from datetime import datetime
 
 Status = Literal["ok", "blocked", "error"]
 Mode = Literal["TEST", "DRY_RUN", "LIVE"]

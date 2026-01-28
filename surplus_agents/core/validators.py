@@ -136,7 +136,7 @@ def validate_url(url: str, field_name: str = "url") -> Optional[str]:
         return f"Field '{field_name}' must be a string"
     
     # Basic URL validation pattern
-    pattern = r'^https?://[^\s/$.?#].[^\s]*$'
+    pattern = r'^https?://[^\s/$.?#][^\s]*$'
     if not re.match(pattern, url):
         return f"Field '{field_name}' is not a valid URL"
     

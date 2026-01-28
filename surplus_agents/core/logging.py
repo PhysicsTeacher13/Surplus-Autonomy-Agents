@@ -1,7 +1,6 @@
 import logging
 import sys
 from typing import Optional
-from datetime import datetime, timezone
 
 
 def setup_logger(
@@ -68,8 +67,3 @@ class AgentLogger:
     def critical(self, message: str) -> None:
         """Log critical message."""
         self.logger.critical(self._format_message(message))
-
-
-def get_timestamp() -> str:
-    """Get current UTC timestamp in ISO format."""
-    return datetime.now(timezone.utc).isoformat()
