@@ -73,7 +73,7 @@ def test_county_scraper_test_mode_requires_fixtures():
     result = scraper.scrape("http://example.com")
     
     assert result["status"] == "error"
-    assert "fixture_key" in result["error"] or "No HTTP client" in result["error"]
+    assert "TEST mode requires fixtures" in result["error"] or "fixture_key" in result["error"]
 
 
 @pytest.mark.unit

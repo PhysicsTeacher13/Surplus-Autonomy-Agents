@@ -1,5 +1,6 @@
 """HTML extractor for parsing and extracting data from HTML documents."""
 
+from pathlib import Path
 from typing import Any, Dict, Optional
 try:
     from bs4 import BeautifulSoup
@@ -36,23 +37,23 @@ class HTMLExtractor(BaseExtractor):
             source: HTML string or file path
             **kwargs: Additional options:
                 - selectors: Dict mapping field names to CSS selectors
-                - parser: HTML parser to use (default: "lxml")
+                - parser: HTML parser to use (default: "html.parser")
+                - is_file: If True, treat source as file path; if False, treat as HTML string
                 
         Returns:
             Dictionary containing extracted data
         """
         # Determine if source is a file path or string
-        if isinstance(source, (str, bytes)) and len(source) < 1000 and not source.strip().startswith('<'):
-            # Likely a file path
-            try:
-                with open(source, 'r', encoding='utf-8') as f:
-                    html_content = f.read()
-            except FileNotFoundError:
-                html_content = source  # Treat as raw HTML
+        is_file = kwargs.get('is_file', False)
+        
+        if is_file or (isinstance(source, (str, bytes)) and Path(source).exists()):
+            # It's a file path
+            with open(source, 'r', encoding='utf-8') as f:
+                html_content = f.read()
         else:
             html_content = source
         
-        parser = kwargs.get('parser', 'lxml')
+        parser = kwargs.get('parser', 'html.parser')
         soup = BeautifulSoup(html_content, parser)
         
         selectors = kwargs.get('selectors', {})
@@ -84,24 +85,30 @@ class HTMLExtractor(BaseExtractor):
             }
         }
     
-    def extract_table(self, source: Any, table_selector: Optional[str] = None) -> Dict[str, Any]:
+    def extract_table(self, source: Any, table_selector: Optional[str] = None, **kwargs) -> Dict[str, Any]:
         """
         Extract table data from HTML.
         
         Args:
             source: HTML string or file path
             table_selector: CSS selector for the table (default: first table)
+            **kwargs: Additional options:
+                - is_file: If True, treat source as file path
+                - parser: HTML parser to use (default: "html.parser")
             
         Returns:
             Dictionary with table data as list of rows
         """
-        if isinstance(source, (str, bytes)) and len(source) < 1000 and not source.strip().startswith('<'):
+        is_file = kwargs.get('is_file', False)
+        
+        if is_file or (isinstance(source, (str, bytes)) and Path(source).exists()):
             with open(source, 'r', encoding='utf-8') as f:
                 html_content = f.read()
         else:
             html_content = source
         
-        soup = BeautifulSoup(html_content, 'lxml')
+        parser = kwargs.get('parser', 'html.parser')
+        soup = BeautifulSoup(html_content, parser)
         
         if table_selector:
             table = soup.select_one(table_selector)

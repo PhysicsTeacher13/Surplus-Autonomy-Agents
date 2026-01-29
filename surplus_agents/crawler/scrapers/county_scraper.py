@@ -57,15 +57,19 @@ class CountyWebsiteScraper(BaseScraper):
             if self.mode == "TEST" and self.fixtures:
                 fixture_key = kwargs.get('fixture_key')
                 if not fixture_key:
-                    raise ValueError("fixture_key required in TEST mode")
+                    raise ValueError("TEST mode requires fixture_key parameter")
                 html = self.fixtures.read_text(fixture_key)
             elif self.http_client:
                 html = self.http_client.get_text(url)
             else:
-                raise RuntimeError("No HTTP client or fixtures available")
+                if self.mode == "TEST":
+                    raise RuntimeError("TEST mode requires fixtures to be provided via the fixtures parameter")
+                else:
+                    raise RuntimeError("No HTTP client available for scraping")
             
             # Parse HTML
-            soup = BeautifulSoup(html, 'lxml')
+            parser = kwargs.get('parser', 'html.parser')
+            soup = BeautifulSoup(html, parser)
             
             # Extract data using selectors
             selectors = kwargs.get('selectors', {})
@@ -115,26 +119,21 @@ class CountyWebsiteScraper(BaseScraper):
         """
         Scrape property listing from county website.
         
+        NOTE: This is a placeholder method. Actual implementation depends on
+        the specific structure of each county's website.
+        
         Args:
             url: Property list URL
             **kwargs: Additional options
             
         Returns:
             Dictionary with property listings
+            
+        Raises:
+            NotImplementedError: This method requires custom implementation
+                                 for each county's website structure
         """
-        result = self.scrape(url, **kwargs)
-        
-        if result['status'] != 'ok':
-            return result
-        
-        # Extract property-specific data
-        # This is a simplified example - actual implementation would be more sophisticated
-        properties = []
-        
-        return {
-            **result,
-            'data': {
-                'properties': properties,
-                'property_count': len(properties)
-            }
-        }
+        raise NotImplementedError(
+            "scrape_property_list must be implemented for specific county websites. "
+            "Each county has different HTML structure requiring custom selectors."
+        )
